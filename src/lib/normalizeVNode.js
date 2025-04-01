@@ -1,4 +1,4 @@
-const isNotFalsy = (el) =>
+export const isNotFalsy = (el) =>
   el !== null && el !== undefined && typeof el !== "boolean";
 
 export function normalizeVNode(vNode) {
