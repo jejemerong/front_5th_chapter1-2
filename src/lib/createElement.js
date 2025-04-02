@@ -1,4 +1,4 @@
-// import { addEvent } from "./eventManager";
+import { addEvent } from "./eventManager";
 import { isNotFalsy } from "./normalizeVNode";
 
 export function createElement(vNode) {
@@ -24,23 +24,29 @@ export function createElement(vNode) {
   }
 
   const { type, props, children } = vNode;
-  const tag = document.createElement(type);
+
+  const element = document.createElement(type);
 
   if (props) {
     // 요소 꺼내서 속성 추가
-    for (const [key, value] of Object.entries(props)) {
-      if (key === "className") {
-        tag.setAttribute("class", value);
-      } else {
-        tag.setAttribute(key, value);
-      }
-    }
+    updateAttributes(element, props);
   }
 
   children.forEach((el) => {
-    tag.appendChild(createElement(el));
+    element.appendChild(createElement(el));
   });
-  return tag;
+  return element;
 }
 
-// function updateAttributes(key, value) {} // 이거 안써도 되잖아 그치
+function updateAttributes($el, props) {
+  for (const [key, value] of Object.entries(props)) {
+    if (key === "className") {
+      $el.setAttribute("class", value);
+    } else if (typeof value === "function" && key.startsWith("on")) {
+      const eventType = key.slice(2).toLowerCase();
+      addEvent($el, eventType, value);
+    } else {
+      $el.setAttribute(key, value);
+    }
+  }
+}
