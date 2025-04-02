@@ -9,7 +9,6 @@ export function addEvent(element, eventType, handler) {
   }
   const elementHandlers = eventHandlers.get(element);
 
-  if (elementHandlers[eventType]) return;
   elementHandlers[eventType] = handler; // 핸들러 추가
 }
 
@@ -22,7 +21,7 @@ export function removeEvent(element, eventType) {
 
 export function setupEventListeners(root) {
   eventTypes.forEach((eventType) => {
-    root.addEventListener(eventType, (event) => {
+    root.addEventListener(eventType, function (event) {
       let target = event.target; // 시작점
       // target -> root
       while (target && target !== root) {
@@ -36,16 +35,3 @@ export function setupEventListeners(root) {
     });
   });
 }
-
-// 모든 요소 순회 X
-// export function setupEventListeners(root) {
-//   eventTypes.forEach((eventType) => {
-//     root.addEventListener(eventType, (event) => {
-//       eventHandlers.forEach((handlers, element) => {
-//         if (element.contains(event.target) && handlers[eventType]) {
-//           handlers[eventType](event);
-//         }
-//       });
-//     });
-//   });
-// }
