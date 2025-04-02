@@ -12,6 +12,7 @@ export function addEvent(element, eventType, handler) {
   elementHandlers[eventType] = handler; // 핸들러 추가
 }
 
+// TODO: handler 필요없는지 확인
 export function removeEvent(element, eventType) {
   if (eventHandlers.has(element)) {
     const elementHandlers = eventHandlers.get(element);
