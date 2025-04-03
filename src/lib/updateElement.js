@@ -12,11 +12,11 @@ function updateAttributes(target, originNewProps, originOldProps) {
 
   // 새 이벤트 추가
   for (const [key, value] of Object.entries(originNewProps)) {
-    if (key.startsWith("on")) {
+    if (key === "className") {
+      target.setAttribute("class", value);
+    } else if (key.startsWith("on")) {
       const eventType = key.slice(2).toLowerCase();
-      if (!originOldProps || originOldProps[key] !== value) {
-        addEvent(target, eventType, value);
-      }
+      addEvent(target, eventType, value);
     } else {
       target.setAttribute(key, value);
     }
@@ -24,41 +24,43 @@ function updateAttributes(target, originNewProps, originOldProps) {
 }
 
 export function updateElement(target, newNode, oldNode, index = 0) {
-  if (!oldNode) {
+  if (!oldNode && newNode) {
     // 새로운 노드 추가
     target.appendChild(createElement(newNode));
     return;
   }
 
-  const childNodes = target.childNodes;
-  if (!newNode) {
+  if (!newNode && oldNode) {
     // 기존 노드 제거
-    target.removeChild(childNodes[index]);
+    target.removeChild(target.childNodes[index]);
     return;
   }
 
-  if (typeof newNode !== typeof oldNode || newNode.type !== oldNode.type) {
-    // 노드가 다르면 교체
-    target.replaceChild(createElement(newNode), childNodes[index]);
-    return;
-  }
-
-  // 텍스트 노드
-  if (typeof newNode === "string") {
+  if (typeof newNode === "string" && typeof oldNode === "string") {
     if (newNode !== oldNode) {
-      childNodes[index].nodeValue = newNode;
+      target.replaceChild(createElement(newNode), target.childNodes[index]);
     }
     return;
   }
 
+  if (newNode.type !== oldNode.type) {
+    // 노드가 다르면 교체
+    target.replaceChild(createElement(newNode), target.childNodes[index]);
+    return;
+  }
+
   // 속성 업데이트
-  updateAttributes(childNodes[index], newNode.props, oldNode.props);
+  updateAttributes(
+    target.childNodes[index],
+    newNode.props || {},
+    oldNode.props || {},
+  );
 
   // 자식 노드 업데이트
   const newChildren = newNode.children || [];
   const oldChildren = oldNode.children || [];
   const max = Math.max(newChildren.length, oldChildren.length);
   for (let i = 0; i < max; i++) {
-    updateElement(childNodes[index], newChildren[i], oldChildren[i], i);
+    updateElement(target.childNodes[index], newChildren[i], oldChildren[i], i);
   }
 }
