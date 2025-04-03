@@ -2,7 +2,6 @@ import { addEvent, removeEvent } from "./eventManager";
 import { createElement } from "./createElement.js";
 
 function updateAttributes(target, originNewProps, originOldProps) {
-  // 기존 이벤트 제거
   for (const [key] of Object.entries(originOldProps)) {
     if (key.startsWith("on") && !(key in originNewProps)) {
       const eventType = key.slice(2).toLowerCase();
@@ -10,7 +9,6 @@ function updateAttributes(target, originNewProps, originOldProps) {
     }
   }
 
-  // 새 이벤트 추가
   for (const [key, value] of Object.entries(originNewProps)) {
     if (key === "className") {
       target.setAttribute("class", value);
