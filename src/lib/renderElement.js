@@ -3,16 +3,18 @@ import { setupEventListeners } from "./eventManager";
 import { normalizeVNode } from "./normalizeVNode";
 import { updateElement } from "./updateElement";
 
+let oldNode = null;
+
 export function renderElement(vNode, container) {
   const initElement = container.firstChild;
-  const normalizedNode = normalizeVNode(vNode);
+  const newNode = normalizeVNode(vNode);
 
   if (!initElement) {
-    const node = createElement(normalizedNode);
+    const node = createElement(newNode);
     container.appendChild(node);
   } else {
-    updateElement(container, normalizedNode, initElement);
+    updateElement(container, newNode, oldNode);
   }
-
+  oldNode = newNode;
   setupEventListeners(container);
 }
