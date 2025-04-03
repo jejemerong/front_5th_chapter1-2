@@ -6,7 +6,6 @@ import { updateElement } from "./updateElement";
 export function renderElement(vNode, container) {
   const initElement = container.firstChild;
   const normalizedNode = normalizeVNode(vNode);
-  console.log("initElement", initElement);
 
   if (!initElement) {
     const node = createElement(normalizedNode);
@@ -15,8 +14,5 @@ export function renderElement(vNode, container) {
     updateElement(container, normalizedNode, initElement);
   }
 
-  if (!container.dataset.hasEvents) {
-    setupEventListeners(container);
-    container.dataset.hasEvents = "true";
-  }
+  setupEventListeners(container);
 }
